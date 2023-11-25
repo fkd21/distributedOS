@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package image_service;
+package coordinator;
 option go_package = "../server";
 
 
@@ -11,6 +11,6 @@ message GetBestServerResponse {
 message GetBestServerRequest {
 }
 
-service ImageService {
+service Coordinator {
  rpc GetBestServer (GetBestServerRequest) returns (GetBestServerResponse) {}
 }

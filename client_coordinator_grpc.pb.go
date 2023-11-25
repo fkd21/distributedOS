@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ImageServiceClient is the client API for ImageService service.
+// CoordinatorClient is the client API for Coordinator service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ImageServiceClient interface {
+type CoordinatorClient interface {
 	GetBestServer(ctx context.Context, in *GetBestServerRequest, opts ...grpc.CallOption) (*GetBestServerResponse, error)
 }
 
-type imageServiceClient struct {
+type coordinatorClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewImageServiceClient(cc grpc.ClientConnInterface) ImageServiceClient {
-	return &imageServiceClient{cc}
+func NewCoordinatorClient(cc grpc.ClientConnInterface) CoordinatorClient {
+	return &coordinatorClient{cc}
 }
 
-func (c *imageServiceClient) GetBestServer(ctx context.Context, in *GetBestServerRequest, opts ...grpc.CallOption) (*GetBestServerResponse, error) {
+func (c *coordinatorClient) GetBestServer(ctx context.Context, in *GetBestServerRequest, opts ...grpc.CallOption) (*GetBestServerResponse, error) {
 	out := new(GetBestServerResponse)
-	err := c.cc.Invoke(ctx, "/image_service.ImageService/GetBestServer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/coordinator.Coordinator/GetBestServer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ImageServiceServer is the server API for ImageService service.
-// All implementations must embed UnimplementedImageServiceServer
+// CoordinatorServer is the server API for Coordinator service.
+// All implementations must embed UnimplementedCoordinatorServer
 // for forward compatibility
-type ImageServiceServer interface {
+type CoordinatorServer interface {
 	GetBestServer(context.Context, *GetBestServerRequest) (*GetBestServerResponse, error)
-	mustEmbedUnimplementedImageServiceServer()
+	mustEmbedUnimplementedCoordinatorServer()
 }
 
-// UnimplementedImageServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedImageServiceServer struct {
+// UnimplementedCoordinatorServer must be embedded to have forward compatible implementations.
+type UnimplementedCoordinatorServer struct {
 }
 
-func (UnimplementedImageServiceServer) GetBestServer(context.Context, *GetBestServerRequest) (*GetBestServerResponse, error) {
+func (UnimplementedCoordinatorServer) GetBestServer(context.Context, *GetBestServerRequest) (*GetBestServerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBestServer not implemented")
 }
-func (UnimplementedImageServiceServer) mustEmbedUnimplementedImageServiceServer() {}
+func (UnimplementedCoordinatorServer) mustEmbedUnimplementedCoordinatorServer() {}
 
-// UnsafeImageServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ImageServiceServer will
+// UnsafeCoordinatorServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CoordinatorServer will
 // result in compilation errors.
-type UnsafeImageServiceServer interface {
-	mustEmbedUnimplementedImageServiceServer()
+type UnsafeCoordinatorServer interface {
+	mustEmbedUnimplementedCoordinatorServer()
 }
 
-func RegisterImageServiceServer(s grpc.ServiceRegistrar, srv ImageServiceServer) {
-	s.RegisterService(&ImageService_ServiceDesc, srv)
+func RegisterCoordinatorServer(s grpc.ServiceRegistrar, srv CoordinatorServer) {
+	s.RegisterService(&Coordinator_ServiceDesc, srv)
 }
 
-func _ImageService_GetBestServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Coordinator_GetBestServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBestServerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ImageServiceServer).GetBestServer(ctx, in)
+		return srv.(CoordinatorServer).GetBestServer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/image_service.ImageService/GetBestServer",
+		FullMethod: "/coordinator.Coordinator/GetBestServer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ImageServiceServer).GetBestServer(ctx, req.(*GetBestServerRequest))
+		return srv.(CoordinatorServer).GetBestServer(ctx, req.(*GetBestServerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
+// Coordinator_ServiceDesc is the grpc.ServiceDesc for Coordinator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ImageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "image_service.ImageService",
-	HandlerType: (*ImageServiceServer)(nil),
+var Coordinator_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "coordinator.Coordinator",
+	HandlerType: (*CoordinatorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetBestServer",
-			Handler:    _ImageService_GetBestServer_Handler,
+			Handler:    _Coordinator_GetBestServer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
