@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ImageServiceClient interface {
 	GetSingleImg(ctx context.Context, in *ResizeRequest, opts ...grpc.CallOption) (*GetSingleImgResult, error)
 	GetMultiImgs(ctx context.Context, in *Imgrequests, opts ...grpc.CallOption) (ImageService_GetMultiImgsClient, error)
+	Getserverstatus(ctx context.Context, in *GetServerStatusRequest, opts ...grpc.CallOption) (*Serverstatus, error)
 }
 
 type imageServiceClient struct {
@@ -75,12 +76,22 @@ func (x *imageServiceGetMultiImgsClient) Recv() (*Imgresult, error) {
 	return m, nil
 }
 
+func (c *imageServiceClient) Getserverstatus(ctx context.Context, in *GetServerStatusRequest, opts ...grpc.CallOption) (*Serverstatus, error) {
+	out := new(Serverstatus)
+	err := c.cc.Invoke(ctx, "/image_service.ImageService/Getserverstatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ImageServiceServer is the server API for ImageService service.
 // All implementations must embed UnimplementedImageServiceServer
 // for forward compatibility
 type ImageServiceServer interface {
 	GetSingleImg(context.Context, *ResizeRequest) (*GetSingleImgResult, error)
 	GetMultiImgs(*Imgrequests, ImageService_GetMultiImgsServer) error
+	Getserverstatus(context.Context, *GetServerStatusRequest) (*Serverstatus, error)
 	mustEmbedUnimplementedImageServiceServer()
 }
 
@@ -93,6 +104,9 @@ func (UnimplementedImageServiceServer) GetSingleImg(context.Context, *ResizeRequ
 }
 func (UnimplementedImageServiceServer) GetMultiImgs(*Imgrequests, ImageService_GetMultiImgsServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetMultiImgs not implemented")
+}
+func (UnimplementedImageServiceServer) Getserverstatus(context.Context, *GetServerStatusRequest) (*Serverstatus, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Getserverstatus not implemented")
 }
 func (UnimplementedImageServiceServer) mustEmbedUnimplementedImageServiceServer() {}
 
@@ -146,6 +160,24 @@ func (x *imageServiceGetMultiImgsServer) Send(m *Imgresult) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ImageService_Getserverstatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServerStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImageServiceServer).Getserverstatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/image_service.ImageService/Getserverstatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImageServiceServer).Getserverstatus(ctx, req.(*GetServerStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ImageService_ServiceDesc is the grpc.ServiceDesc for ImageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,6 +188,10 @@ var ImageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSingleImg",
 			Handler:    _ImageService_GetSingleImg_Handler,
+		},
+		{
+			MethodName: "Getserverstatus",
+			Handler:    _ImageService_Getserverstatus_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

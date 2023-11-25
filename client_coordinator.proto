@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package image_service;
+option go_package = "../server";
+
+
+message GetBestServerResponse {
+ string server = 1;
+}
+
+message GetBestServerRequest {
+}
+
+service ImageService {
+ rpc GetBestServer (GetBestServerRequest) returns (GetBestServerResponse) {}
+}

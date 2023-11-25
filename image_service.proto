@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package image_service;
+option go_package = "../server";
+message ResizeRequest {
+  string key = 1;
+  int32 size_x = 2;
+  int32 size_y = 3;
+}
+
+message GetSingleImgResult {
+  bytes data = 1;
+}
+
+message Imgrequests{
+  repeated ResizeRequest requests = 1;
+}
+
+message Imgresult{
+  string key = 1;
+  bytes data = 2;
+}
+
+message Serverstatus{
+  int32 queuelength = 1;
+}
+
+message GetServerStatusRequest{
+}
+
+
+
+service ImageService {
+  rpc GetSingleImg(ResizeRequest) returns (GetSingleImgResult){}
+  rpc getMultiImgs(Imgrequests) returns (stream Imgresult){}
+  rpc Getserverstatus(GetServerStatusRequest) returns (Serverstatus){}
+}
